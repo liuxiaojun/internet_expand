@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Arrays;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -13,27 +14,36 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
  */
 public class SimExpand {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, URISyntaxException {
-        Configuration conf = new Configuration();
-        conf.setFloat("mapreduce.job.reduce.slowstart.completedmaps", 0.95F);
-        conf.set("mapreduce.reduce.speculative","false");
+        if (args.length >= 1 && args[0].length()==10) {
+            Configuration conf = new Configuration();
+            conf.setFloat("mapreduce.job.reduce.slowstart.completedmaps", 0.95F);
+            conf.set("mapreduce.reduce.speculative", "false");
 
-        DistributedCache.addCacheFile(new URI("hdfs://nameservice1/data/user/ap_city.txt#ap_city.txt"), conf);
-        DistributedCache.addCacheFile(new URI("hdfs://nameservice1/data/user/apmac_orgId.txt#apmac_orgId.txt"), conf);
+            DistributedCache.addCacheFile(new URI("hdfs://nameservice1/data/user/ap_city.txt#ap_city.txt"), conf);
+            DistributedCache.addCacheFile(new URI("hdfs://nameservice1/data/user/apmac_orgId.txt#apmac_orgId.txt"), conf);
 
-        Job job = Job.getInstance(conf, "expand_internet_test");
-        String out_put = "/tmp/expand_internet_" + System.currentTimeMillis();
-        Path out = new Path(out_put);
-        // use test
-        FileInputFormat.addInputPaths(job,"hdfs://nameservice1/data/internet/2017/01/10/internet_2017011000.log.bz2");
-        Integer reduceTasks = 1;
+            Job job = Job.getInstance(conf, "expand_internet_test");
 
-        FileOutputFormat.setOutputPath(job, out);
-        job.setJarByClass(SimExpand.class);
-        job.setMapperClass(SimMap.class);
-        job.setReducerClass(SimReduce.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(Text.class);
-        job.setNumReduceTasks(reduceTasks*500);
-        job.waitForCompletion(true);
+            String out_put = "/tmp/expand_internet_" + System.currentTimeMillis();
+            Path out = new Path(out_put);
+
+            String timeHour = args[0];
+            job.getConfiguration().setStrings("timeHour", timeHour);
+
+            // use test
+            FileInputFormat.addInputPaths(job, "hdfs://nameservice1/data/internet/"+timeHour.substring(0,4)+"/"+timeHour.substring(4,6)+"/"+timeHour.substring(6,8)+"/internet_"+timeHour+".log.bz2");
+            Integer reduceTasks = 1;
+
+            FileOutputFormat.setOutputPath(job, out);
+            job.setJarByClass(SimExpand.class);
+            job.setMapperClass(SimMap.class);
+            job.setReducerClass(SimReduce.class);
+            job.setMapOutputKeyClass(Text.class);
+            job.setMapOutputValueClass(Text.class);
+            job.setNumReduceTasks(reduceTasks * 500);
+            job.waitForCompletion(true);
+        }else{
+            System.out.println(Arrays.toString(args));
+        }
     }
 }

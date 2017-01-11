@@ -3,9 +3,10 @@
  */
 public class TestDate {
     public static void main(String[] args) {
-        String dat = "20170110002029";
+        String dat = "2017011000";
         System.out.println(dat.substring(0,2));
         System.out.println(dat.substring(2,4));
         System.out.println(dat.substring(4,6));
+
     }
 }

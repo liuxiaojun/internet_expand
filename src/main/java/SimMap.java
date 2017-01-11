@@ -12,6 +12,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
  */
 public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
     private static final int wantedLength = 8;
+    public static String timeHour;
     public static HashMap<String, String> apMacCityCode = new HashMap<>();
     public static HashMap<String, String> apMacOrgId = new HashMap<>();
 
@@ -48,6 +49,7 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
 
     protected void setup(Mapper.Context context)
             throws IOException, InterruptedException {
+        timeHour = context.getConfiguration().get("timeHour");
         apMacCityFileInit(context);
         apMacOrgIdInit(context);
     }
@@ -133,16 +135,15 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
         expanded_list[6] = getCityCode(source_list[2]); //cityCode
         expanded_list[7] = getOrgName(source_list[2]); //lineId  apMacOrgId
 
-
         HashMap<String, String> result = new HashMap<String, String>();
         result.put("value", org.apache.hadoop.util.StringUtils.join(",", expanded_list));
 
-        String yearStr = source_list[0].substring(0,2);
-        String monthStr = source_list[0].substring(2,4);
-        String dateStr = source_list[0].substring(4,6);
-        String hourStr = source_list[0].substring(6,8);
-        result.put("outPath", String.format("/expand_prod/%s/%s/%s/%s/%s", topic, yearStr, monthStr, dateStr, hourStr));
+        String yearStr = timeHour.substring(0,4);
+        String monthStr = timeHour.substring(4,6);
+        String dateStr = timeHour.substring(6,8);
+        String hourStr = timeHour.substring(8,10);
 
+        result.put("outPath", String.format("/expand_prod/%s/%s/%s/%s/%s", topic, yearStr, monthStr, dateStr, hourStr));
         return result;
     }
 
