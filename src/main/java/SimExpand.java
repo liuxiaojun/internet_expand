@@ -22,15 +22,14 @@ public class SimExpand {
             DistributedCache.addCacheFile(new URI("hdfs://nameservice1/data/user/ap_city.txt#ap_city.txt"), conf);
             DistributedCache.addCacheFile(new URI("hdfs://nameservice1/data/user/apmac_orgId.txt#apmac_orgId.txt"), conf);
 
-            Job job = Job.getInstance(conf, "expand_internet_test");
+            String timeHour = args[0];
+            Job job = Job.getInstance(conf, "expand_internet_"+timeHour);
+            job.getConfiguration().setStrings("timeHour", timeHour);
 
             String out_put = "/tmp/expand_internet_" + System.currentTimeMillis();
             Path out = new Path(out_put);
 
-            String timeHour = args[0];
-            job.getConfiguration().setStrings("timeHour", timeHour);
-
-            // use test
+            //one hour
             FileInputFormat.addInputPaths(job, "hdfs://nameservice1/data/internet/"+timeHour.substring(0,4)+"/"+timeHour.substring(4,6)+"/"+timeHour.substring(6,8)+"/internet_"+timeHour+".log.bz2");
             Integer reduceTasks = 1;
 
