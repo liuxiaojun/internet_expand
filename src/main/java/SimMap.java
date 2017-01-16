@@ -11,7 +11,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
  * Created by liuxiaojun on 2017/1/10.
  */
 public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
-    private static final int wantedLength = 8;
+    private static final int wantedLength = 9;
     public static String timeHour;
     public static HashMap<String, String> apMacCityCode = new HashMap<>();
     public static HashMap<String, String> apMacOrgId = new HashMap<>();
