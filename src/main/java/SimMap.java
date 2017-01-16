@@ -131,9 +131,15 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
         expanded_list[2] = source_list[2];
         expanded_list[3] = source_list[3];
         expanded_list[4] = raw_url;
-        expanded_list[5] = getUrlHost(decode_url); //host
-        expanded_list[6] = getCityCode(source_list[2]); //cityCode
-        expanded_list[7] = getOrgName(source_list[2]); //lineId  apMacOrgId
+        if (source_list.length>=6){
+            expanded_list[5] = source_list[5];
+        }
+        else{
+            expanded_list[5] = "";
+        }
+        expanded_list[6] = getUrlHost(decode_url); //host
+        expanded_list[7] = getCityCode(source_list[2]); //cityCode
+        expanded_list[8] = getOrgName(source_list[2]); //lineId  apMacOrgId
 
         HashMap<String, String> result = new HashMap<String, String>();
         result.put("value", org.apache.hadoop.util.StringUtils.join(",", expanded_list));
