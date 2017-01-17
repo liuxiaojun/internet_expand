@@ -11,7 +11,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
  * Created by liuxiaojun on 2017/1/10.
  */
 public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
-    private static final int wantedLength = 9;
+    private static final int wantedLength = 10;
     public static String timeHour;
     public static HashMap<String, String> apMacCityCode = new HashMap<>();
     public static HashMap<String, String> apMacOrgId = new HashMap<>();
@@ -45,7 +45,6 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
         br.close();
         reader.close();
     }
-
 
     protected void setup(Mapper.Context context)
             throws IOException, InterruptedException {
@@ -102,7 +101,6 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
 
     public static HashMap<String, String> expandLine(String collectLine, String topic
     ) throws IOException, InterruptedException {
-
         String[] source_list = collectLine.split(",", -1);
         int arraylength = source_list.length;
         if (collectLine.trim().length() == 0 || arraylength < 6) {
@@ -138,8 +136,10 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
             expanded_list[5] = "";
         }
         expanded_list[6] = getUrlHost(decode_url); //host
-        expanded_list[7] = getCityCode(source_list[2]); //cityCode
-        expanded_list[8] = getOrgName(source_list[2]); //lineId  apMacOrgId
+        expanded_list[7] = decode_url.replaceAll(",","").toLowerCase(); // url.toLowerCase
+
+        expanded_list[8] = getCityCode(source_list[2]); //cityCode
+        expanded_list[9] = getOrgName(source_list[2]);  //lineId  apMacOrgId
 
         HashMap<String, String> result = new HashMap<String, String>();
         result.put("value", org.apache.hadoop.util.StringUtils.join(",", expanded_list));
