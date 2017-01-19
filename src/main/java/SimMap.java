@@ -163,10 +163,11 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
         String topic = "internet";
         expanded = expandLine(value.toString(),topic); //此处测试是internet etl
 
-        keyText.set(expanded.get("outPath"));
-        valueText.set(expanded.get("value"));
-
-        context.write(keyText, valueText);
+        if (expanded.containsKey("outPath")) {
+            keyText.set(expanded.get("outPath"));
+            valueText.set(expanded.get("value"));
+            context.write(keyText, valueText);
+        }
     }
 
     @Override
