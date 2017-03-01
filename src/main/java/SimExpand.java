@@ -16,6 +16,8 @@ public class SimExpand {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, URISyntaxException {
         if (args.length >= 1 && args[0].length()==10) {
             Configuration conf = new Configuration();
+            conf.set("mapreduce.map.memory.mb","9999");
+            conf.set("mapreduce.reduce.memory.mb","9999");
             conf.setFloat("mapreduce.job.reduce.slowstart.completedmaps", 0.95F);
             conf.set("mapreduce.reduce.speculative", "false");
 
