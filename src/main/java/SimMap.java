@@ -134,9 +134,8 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
 
         String getQuery = "";
         if (url.getQuery() != null){
-            getQuery = getQuery.replace(",","");
+            getQuery = url.getQuery().replace(",","");
         }
-
         expanded_list[9] = getQuery; // 请求参数
 
         expanded_list[10] = getCityCode(source_list[2]); //cityCode
