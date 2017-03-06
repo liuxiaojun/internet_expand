@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.net.URL;
 import org.apache.hadoop.io.LongWritable;
@@ -11,7 +12,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
  * Created by liuxiaojun on 2017/1/10.
  */
 public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
-    private static final int wantedLength = 10;
+    private static final int wantedLength = 12;
     public static String timeHour;
     public static HashMap<String, String> apMacCityCode = new HashMap<>();
     public static HashMap<String, String> apMacOrgId = new HashMap<>();
@@ -70,16 +71,6 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
 
     public static HashMap<String, String> result = new HashMap<>();
 
-    public static String getUrlHost(String decode_url) throws MalformedURLException {
-        String urlHost = "";
-        try {
-            urlHost = new URL(decode_url).getHost();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return urlHost;
-    }
-
     public static String getCityCode(String apMac){
         String cityCode = "000000";
         if (apMacCityCode.containsKey(apMac)){
@@ -135,11 +126,21 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
         else{
             expanded_list[5] = "";
         }
-        expanded_list[6] = getUrlHost(decode_url); //host
-        expanded_list[7] = decode_url.replaceAll(",","").toLowerCase(); // url.toLowerCase
 
-        expanded_list[8] = getCityCode(source_list[2]); //cityCode
-        expanded_list[9] = getOrgName(source_list[2]);  //lineId  apMacOrgId
+        URL url = new URL(decode_url);
+        expanded_list[6] = url.getProtocol(); //协议
+        expanded_list[7] = url.getHost(); //host
+        expanded_list[8] = url.getPath().toString(); // 路径
+
+        String getQuery = "";
+        if (url.getQuery() != null){
+            getQuery = getQuery.replace(",","");
+        }
+
+        expanded_list[9] = getQuery; // 请求参数
+
+        expanded_list[10] = getCityCode(source_list[2]); //cityCode
+        expanded_list[11] = getOrgName(source_list[2]);  //lineId  apMacOrgId
 
         HashMap<String, String> result = new HashMap<String, String>();
         result.put("value", org.apache.hadoop.util.StringUtils.join(",", expanded_list));
