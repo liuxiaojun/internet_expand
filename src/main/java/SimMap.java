@@ -120,17 +120,12 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
         expanded_list[2] = source_list[2];
         expanded_list[3] = source_list[3];
         expanded_list[4] = raw_url;
-        if (source_list.length>=6){
-            expanded_list[5] = source_list[5];
-        }
-        else{
-            expanded_list[5] = "";
-        }
+        expanded_list[5] = source_list[5];
 
         URL url = new URL(decode_url);
         expanded_list[6] = url.getProtocol(); //协议
         expanded_list[7] = url.getHost(); //host
-        expanded_list[8] = url.getPath().toString(); // 路径
+        expanded_list[8] = url.getPath().toString().replace(",",""); // 路径
 
         String getQuery = "";
         if (url.getQuery() != null){
