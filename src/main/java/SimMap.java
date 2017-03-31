@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.net.URL;
 import org.apache.hadoop.io.LongWritable;
@@ -12,7 +11,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
  * Created by liuxiaojun on 2017/1/10.
  */
 public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
-    private static final int wantedLength = 12;
+    private static final int wantedLength = 13;
     public static String timeHour;
     public static HashMap<String, String> apMacCityCode = new HashMap<>();
     public static HashMap<String, String> apMacOrgId = new HashMap<>();
@@ -94,8 +93,8 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
     ) throws IOException, InterruptedException {
         String[] source_list = collectLine.split(",", -1);
         int arraylength = source_list.length;
-        if (collectLine.trim().length() == 0 || arraylength < 6) {
-            System.out.println("arraylength < 6");
+        if (collectLine.trim().length() == 0 || arraylength < 9) {
+            System.out.println("arraylength < 9");
             System.out.println("collectLine===>"+collectLine);
             return result;
         }
@@ -135,6 +134,7 @@ public class SimMap extends Mapper<LongWritable, Text, Text, Text> {
 
         expanded_list[10] = getCityCode(source_list[2]); //cityCode
         expanded_list[11] = getOrgName(source_list[2]);  //lineId  apMacOrgId
+        expanded_list[12] = source_list[6];
 
         HashMap<String, String> result = new HashMap<String, String>();
         result.put("value", org.apache.hadoop.util.StringUtils.join(",", expanded_list));
